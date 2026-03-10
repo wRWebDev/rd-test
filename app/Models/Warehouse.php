@@ -29,6 +29,9 @@ class Warehouse extends Model
     /** @var string */
     protected $primaryKey = 'uuid';
 
+    /** @var array<string> */
+    protected $guarded = [];
+
     /** @return array<string> */
     public function uniqueIds()
     {
