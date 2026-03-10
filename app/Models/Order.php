@@ -53,7 +53,7 @@ class Order extends Model
             ->withTimestamps();
     }
 
-    public function addProduct(Product $product, int $quantity = 1): void
+    public function addProduct(Product $product, int $quantity = 1, bool $updateTotal = true, bool $save = true): void
     {
         $this->products()->syncWithPivotValues(
             $product,
@@ -90,6 +90,14 @@ class Order extends Model
             });
 
         $product->forgetStats();
+
+        if ($updateTotal) {
+            $this->total += ($product->price * $quantity);
+        }
+
+        if ($save) {
+            $this->save();
+        }
 
         if ($quantityForOrder) {
             throw new Exception('There was not enough stock to satisfy this order');

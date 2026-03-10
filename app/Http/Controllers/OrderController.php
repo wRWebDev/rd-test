@@ -49,7 +49,7 @@ class OrderController extends Controller
 
         $order = Order::create([
             'status' => OrderStatus::PLACED,
-            'total' => $product->price * $quantity,
+            'total' => 0,
         ]);
 
         $order->addProduct($product, $quantity);
