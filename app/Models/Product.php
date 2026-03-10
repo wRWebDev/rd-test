@@ -45,6 +45,13 @@ class Product extends Model
             ->withTimestamps();
     }
 
+    /** @return BelongsToMany<Warehouse, $this, WarehouseStock, 'stock'> */
+    public function warehousesOrderedByStockDesc(): BelongsToMany
+    {
+        return $this->warehouses()
+            ->orderByPivotDesc('quantity');
+    }
+
     /** @return BelongsToMany<Order, $this> */
     public function orders(): BelongsToMany
     {

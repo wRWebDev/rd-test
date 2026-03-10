@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -47,5 +48,46 @@ class Order extends Model
         return $this->belongsToMany(Product::class, 'orders_items')
             ->withPivot('price', 'quantity', 'total')
             ->withTimestamps();
+    }
+
+    public function addProduct(Product $product, int $quantity = 1): void
+    {
+        $this->products()->syncWithPivotValues(
+            $product,
+            values: [
+                'price' => $product->price,
+                'quantity' => $quantity,
+                'total' => $product->price * $quantity,
+            ],
+            detaching: false
+        );
+
+        $quantityForOrder = $quantity;
+
+        $product->warehousesOrderedByStockDesc()
+            ->each(function (Warehouse $warehouse) use (&$quantityForOrder) {
+                // Find the available stock from this warehouse
+                $stock = $warehouse->stock->quantity - $warehouse->stock->threshold;
+
+                // How much stock should we use from this warehouse?
+                $fromWarehouse = $quantityForOrder > $stock
+                    ? $stock
+                    : $quantityForOrder;
+
+                // Remove the stock from the warehouse
+                $warehouse->stock->quantity -= $fromWarehouse;
+                $warehouse->stock->save();
+
+                $quantityForOrder -= $fromWarehouse;
+
+                // If we've satisfied the order, break out of the each loop
+                if ($quantityForOrder === 0) {
+                    return;
+                }
+            });
+
+        if ($quantityForOrder) {
+            throw new Exception('There was not enough stock to satisfy this order');
+        }
     }
 }
