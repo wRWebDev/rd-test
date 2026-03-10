@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Warehouse;
+use App\Enums\OrderStatus;
 
 class ItemTest extends TestCase
 {
@@ -29,5 +31,17 @@ class ItemTest extends TestCase
     public function test_products_total_quantity(): void
     {
         $this->assertEquals(20, $this->product->totalQuantity());
+    }
+
+    /**
+     * A product can display its total stock allocated to orders
+     */
+    public function test_products_allocated_to_orders(): void
+    {
+        $order = Order::factory()->create(['status' => OrderStatus::PLACED]);
+
+        $order->addProduct($this->product, 5);
+
+        $this->assertEquals(5, $this->product->allocatedToOrders());
     }
 }

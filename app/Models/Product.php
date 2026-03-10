@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -63,5 +64,12 @@ class Product extends Model
     public function totalQuantity(): int
     {
         return $this->warehouses()->sum('warehouse_stock.quantity');
+    }
+
+    public function allocatedToOrders(): int
+    {
+        return $this->orders()
+            ->where('status', OrderStatus::PLACED)
+            ->sum('orders_items.quantity');
     }
 }
