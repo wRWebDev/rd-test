@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property string $uuid
@@ -36,5 +37,15 @@ class Order extends Model
         return [
             'status' => OrderStatus::class,
         ];
+    }
+
+    /**
+     * @return BelongsToMany<Product, $this>
+     */
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'orders_items')
+            ->withPivot('price', 'quantity', 'total')
+            ->withTimestamps();
     }
 }

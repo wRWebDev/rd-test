@@ -44,4 +44,12 @@ class Product extends Model
             ->withPivot('quantity', 'threshold')
             ->withTimestamps();
     }
+
+    /** @return BelongsToMany<Order, $this> */
+    public function orders(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'orders_items')
+            ->withPivot('price', 'quantity', 'total')
+            ->withTimestamps();
+    }
 }
