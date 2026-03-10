@@ -57,4 +57,12 @@ class ItemTest extends TestCase
 
         $this->assertEquals(20, $this->product->physicalQuantity());
     }
+
+    /**
+     * A product can display its total threshold accross warehouses
+     */
+    public function test_products_total_threshold(): void
+    {
+        $this->assertEquals(4, $this->product->totalThreshold());
+    }
 }

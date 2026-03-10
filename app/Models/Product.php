@@ -77,4 +77,9 @@ class Product extends Model
     {
         return $this->totalQuantity() + $this->allocatedToOrders();
     }
+
+    public function totalThreshold(): int
+    {
+        return $this->warehouses()->sum('warehouse_stock.threshold');
+    }
 }
