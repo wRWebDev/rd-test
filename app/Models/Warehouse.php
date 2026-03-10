@@ -42,7 +42,7 @@ class Warehouse extends Model
         ];
     }
 
-    /** @return BelongsToMany<Product, $this, WarehouseStock 'stock'> */
+    /** @return BelongsToMany<Product, $this, WarehouseStock, 'stock'> */
     public function warehouses(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'warehouse_stock')
