@@ -72,10 +72,11 @@ composer static
 
 Here are some things that I'd do if I had more time to spend on this project:
 
-1. Create more tests to ensure everything continues to work as planned as the application expands, including tthe frontend of the site.
-2. Account for scaling up of the number of warehouses in the system.
-3. Make the frontend responsive, and pivot to a reactive framework/use JS to allow for a more dynamic form
-4. Create frontend views for orders & warehouses.
+1. Handle cancelled orders - do the products come back into stock, and if so, in which warehouse?
+2. Create more tests to ensure everything continues to work as planned as the application expands, including tthe frontend of the site.
+3. Account for scaling up of the number of warehouses in the system.
+4. Make the frontend responsive, and pivot to a reactive framework/use JS to allow for a more dynamic form
+5. Create frontend views for orders & warehouses.
 
 ## Screenshots
 
