@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\Warehouse;
 use Illuminate\Database\Seeder;
@@ -26,10 +27,18 @@ class DatabaseSeeder extends Seeder
         foreach ($products as $product) {
             foreach ($warehouses as $warehouse) {
                 $warehouse->products()->attach($product->uuid, [
-                    'quantity' => fake()->numberBetween(10, 50),
+                    'quantity' => fake()->numberBetween(20, 50),
                     'threshold' => fake()->numberBetween(1, 10),
                 ]);
             }
         }
+
+        $order = Order::factory(5)->create(['total' => 0]);
+
+        $order->each(function (Order $order) use ($products) {
+            $product = $products->random();
+            $quantity = fake()->numberBetween(1, $product->immediateDespatch());
+            $order->addProduct($product, $quantity);
+        });
     }
 }
