@@ -43,7 +43,7 @@ class Warehouse extends Model
     }
 
     /** @return BelongsToMany<Product, $this, WarehouseStock, 'stock'> */
-    public function warehouses(): BelongsToMany
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'warehouse_stock')
             ->using(WarehouseStock::class)
