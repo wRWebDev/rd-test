@@ -51,4 +51,9 @@ class Warehouse extends Model
             ->withPivot('quantity', 'threshold')
             ->withTimestamps();
     }
+
+    public function getMapsLink(): string
+    {
+        return sprintf('https://maps.google.com?q=%s', $this->geo_location);
+    }
 }
