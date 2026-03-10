@@ -72,4 +72,9 @@ class Product extends Model
             ->where('status', OrderStatus::PLACED)
             ->sum('orders_items.quantity');
     }
+
+    public function physicalQuantity(): int
+    {
+        return $this->totalQuantity() + $this->allocatedToOrders();
+    }
 }

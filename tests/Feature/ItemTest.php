@@ -44,4 +44,17 @@ class ItemTest extends TestCase
 
         $this->assertEquals(5, $this->product->allocatedToOrders());
     }
+
+    /**
+     * A product can display its physical quantity
+     * (sum of total quantity + what's allocated to orders)
+     */
+    public function test_products_physical_quantity(): void
+    {
+        $order = Order::factory()->create(['status' => OrderStatus::PLACED]);
+
+        $order->addProduct($this->product, 5);
+
+        $this->assertEquals(20, $this->product->physicalQuantity());
+    }
 }
