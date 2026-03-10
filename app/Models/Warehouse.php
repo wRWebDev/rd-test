@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property string $uuid
@@ -38,5 +39,13 @@ class Warehouse extends Model
         return [
             'uuid',
         ];
+    }
+
+    /** @return BelongsToMany<Product, $this> */
+    public function warehouses(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'warehouse_stock')
+            ->withPivot('quantity', 'threshold')
+            ->withTimestamps();
     }
 }
