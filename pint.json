@@ -1,0 +1,21 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "group_import": false,
+        "ordered_imports": {
+            "sort_algorithm": "length",
+            "imports_order": ["class", "function", "const"]
+        },
+        "trailing_comma_in_multiline": {
+            "after_heredoc": true,
+            "elements": ["arrays"]
+        },
+        "blank_line_after_namespace": true,
+        "class_definition": {
+            "multi_line_extends_each_single_line": true,
+            "space_before_parenthesis": false
+        },
+        "single_import_per_statement": true,
+        "no_unused_imports": true
+    }
+}

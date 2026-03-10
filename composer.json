@@ -68,6 +68,9 @@
         ],
         "pre-package-uninstall": [
             "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "lint": [
+            "./vendor/bin/pint --config=pint.json"
         ]
     },
     "extra": {
