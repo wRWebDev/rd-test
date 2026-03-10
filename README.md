@@ -1,59 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# RD Test
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Requirements
 
-## About Laravel
+To install this repository locally, you'll need to be running the following:
+  - `PHP ^8.2`
+  - `composer ^2.0`
+  - `npm ^10`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Installation
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Run the following from the root directory of the project:
+```bash
+composer setup
+php artisan db:seed
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+And then to view the project, run:
+```bash
+php artisan serve
+```
 
-## Learning Laravel
+## Tests
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+To run the project's tests, use:
+```
+composer test
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## About
 
-## Laravel Sponsors
+This project conforms to the given brief and extends it in some areas:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Going further
 
-### Premium Partners
+#### Ordering Products
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+I've allowed for a greater quantity of products to be ordered than the available stock from the warehouse with the greatest quantity. Due to time constraints, I've made the trade-off of not chunking the query for warehouses, making the assumption that we would cross that bridge as and when it becomes an issue.
 
-## Contributing
+#### Caching
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+I took the decision to cache the stats which apply to the products (total quantity, physical quantity, quantity allocated to orders which are still in the warehouses, the stock threshold for each product, and the amount which is available for new orders). This was to speed up the loading of the products page which displays these statistics for all the products. If these statistics weren't cached, the queries which need to join database tables etc. would clog up the database and cause slow low times as the app scales up.
 
-## Code of Conduct
+The cached statistics are then cleared when a product is added to an order, or if the order status changes (handled by `OrderObserver`).
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Geo Locations
 
-## Security Vulnerabilities
+To make use of the `geo_location` attribute of each warehouse, I've included a little link to view the location of each warehouse on Google Maps. It doesn't marry up to the fake address data generated, but that's somewhat above and beyond the scope of this project.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Validation
 
-## License
+There is backend validation on the available quantities for each product. If a quantity which exceeds the product's `immediateDespatch` stat is passed to `OrderController@store`, it will return you to the form and tell you what the error was.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### Opinionated Formatting
+
+I like when one file looks like another. I have opinions about code formatting, but just so long as within a single project, all files conform to a set of rules, I'm happy. To do this, I utilised Laravel's `pint` package, adding a rules file in the root directory `pint.json`, and then set up a `.vscode/settings.json` file which is set to be hidden in the `.gitignore`, but essentially runs the linter any time we save a `.php` file.
+
+#### Static Analysis
+
+I've used PHPStan via the Larastan package to perform some static analysis, help catch unforseen issues and to reduce the amount of redundant code in the codebase. I haven't gone so far as to insist on strict typing, but this is a good starting point if the project were to go in that direction. I believe that in CI/CD environments, things like this are essentials as if they're set up as hooks, either locally or as GitHub actions, they can save a lot of problems down the line.
+
+To run the analysis, use the composer command:
+```bash
+composer static-analysis
+```
+or the alias
+```bash
+composer static
+```
+
+### Next Steps
+
+Here are some things that I'd do if I had more time to spend on this project:
+
+1. Create more tests to ensure everything continues to work as planned as the application expands, including tthe frontend of the site.
+2. Account for scaling up of the number of warehouses in the system.
+3. Make the frontend responsive, and pivot to a reactive framework/use JS to allow for a more dynamic form
+4. Create frontend views for orders & warehouses.
+
+## Screenshots
+
+### Order Form
+URL: `/`
+<img width="100%" alt="Order form screenshot" src="https://github.com/user-attachments/assets/b7c754d7-44f5-40ed-9ec1-589372b5bb46" />
+
+### Products Index
+URL: `/products`
+<img width="100%" alt="Products index screenshot" src="https://github.com/user-attachments/assets/690938c0-2428-40b8-a860-281cf074efa3" />
+
+### Individual Product
+URL: `/products/{product_uuid}`
+<img width="100%" alt="Individual product screenshot" src="https://github.com/user-attachments/assets/ac07f2e0-775f-4fa8-a5ad-eb5c9b8fafc2" />
