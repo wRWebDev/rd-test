@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\View\View;
 use App\Enums\OrderStatus;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
 
 class OrderController extends Controller
@@ -32,7 +33,9 @@ class OrderController extends Controller
                 function (string $attribute, mixed $value, Closure $fail) use ($request, &$product) {
                     $product = Product::findOrFail($request->input('product'));
                     if ((int) $value > $product->immediateDespatch()) {
-                        $fail('Not enough stock to satisfy the order');
+                        $fail(
+                            sprintf('You can only order a maximum of %s %s at this time', $product->immediateDespatch(), Str::plural($product->title))
+                        );
                     }
                 },
             ],
