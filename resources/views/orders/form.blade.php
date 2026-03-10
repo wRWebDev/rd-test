@@ -26,8 +26,7 @@
                 <label for="quantity" class="@error('quantity') text-red-600 @enderror">
                     Enter a quantity
                 </label>
-                <input name="quantity" class="w-full max-w-md bg-stone-800 p-2" type="number"
-                    min="{{ (bool) $product->immediateDespatch() ? 1 : 0 }}" max="{{ $product->immediateDespatch() }}"
+                <input name="quantity" class="w-full max-w-md bg-stone-800 p-2" type="number" min="1"
                     increment="1" value="1" />
                 @error('quantity')
                     <p class="text-red-600 text-sm text-balance">
