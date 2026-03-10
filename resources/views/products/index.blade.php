@@ -13,7 +13,7 @@
         @foreach ($products as $product)
             <tr>
                 <td>{{ $product->title }}</td>
-                <td>{{ $product->price / 100 }}</td>
+                <td>{{ $product->getCurrencyAttribute('price') }}</td>
                 <td>{{ $product->allocatedToOrders() }}</td>
                 <td>{{ $product->physicalQuantity() }}</td>
                 <td>{{ $product->totalThreshold() }}</td>

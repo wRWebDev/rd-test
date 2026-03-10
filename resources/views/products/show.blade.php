@@ -2,7 +2,7 @@
     <h1 class="text-2xl dark:text-white font-bold">{{ $product->title }}</h1>
 
     <p class="text-lg dark:text-white font-medium mt-2">
-        {{ $product->price / 100 }}
+        {{ $product->getCurrencyAttribute('price') }}
     </p>
 
     <p class="text-md dark:text-white mt-2 text-center text-balance">

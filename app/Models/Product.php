@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\OrderStatus;
 use App\Enums\ProductStats;
+use App\Traits\HasCurrencyAttributes;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
@@ -16,12 +17,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $description
  * @property int $price - (in pence)
  * @property-read WarehouseStock $stock
+ *
+ * @use HasFactory<\Database\Factories\ProductFactory>
  */
 class Product extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductFactory> */
+    use HasCurrencyAttributes;
     use HasFactory;
-
     use HasUlids;
 
     /** @var string */
