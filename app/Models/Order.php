@@ -73,7 +73,7 @@ class Order extends Model
         $product->warehousesOrderedByStockDesc()
             ->each(function (Warehouse $warehouse) use (&$quantityForOrder) {
                 // Find the available stock from this warehouse
-                $stock = $warehouse->stock->quantity - $warehouse->stock->threshold;
+                $stock = $warehouse->stock->availableQuantity();
 
                 // How much stock should we use from this warehouse?
                 $fromWarehouse = $quantityForOrder > $stock
@@ -81,8 +81,7 @@ class Order extends Model
                     : $quantityForOrder;
 
                 // Remove the stock from the warehouse
-                $warehouse->stock->quantity -= $fromWarehouse;
-                $warehouse->stock->save();
+                $warehouse->stock->subtractQuantity($fromWarehouse);
 
                 $quantityForOrder -= $fromWarehouse;
 
