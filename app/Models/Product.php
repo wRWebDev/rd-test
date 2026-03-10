@@ -82,4 +82,9 @@ class Product extends Model
     {
         return $this->warehouses()->sum('warehouse_stock.threshold');
     }
+
+    public function immediateDespatch(): int
+    {
+        return $this->totalQuantity() - $this->totalThreshold();
+    }
 }

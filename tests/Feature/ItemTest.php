@@ -65,4 +65,13 @@ class ItemTest extends TestCase
     {
         $this->assertEquals(4, $this->product->totalThreshold());
     }
+
+    /**
+     * A product can show its immediate despatch
+     * (sum of total quantity - total threshold)
+     */
+    public function test_products_immediate_despatch(): void
+    {
+        $this->assertEquals(16, $this->product->immediateDespatch());
+    }
 }
