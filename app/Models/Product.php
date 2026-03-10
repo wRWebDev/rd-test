@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $title
  * @property string $description
  * @property int $price - (in pence)
+ * @property-read WarehouseStock $stock
  */
 class Product extends Model
 {
@@ -34,10 +35,12 @@ class Product extends Model
         ];
     }
 
-    /** @return BelongsToMany<Warehouse, $this> */
+    /** @return BelongsToMany<Warehouse, $this, WarehouseStock, 'stock'> */
     public function warehouses(): BelongsToMany
     {
         return $this->belongsToMany(Warehouse::class, 'warehouse_stock')
+            ->using(WarehouseStock::class)
+            ->as('stock')
             ->withPivot('quantity', 'threshold')
             ->withTimestamps();
     }
