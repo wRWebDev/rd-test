@@ -86,6 +86,8 @@ class Order extends Model
                 }
             });
 
+        $product->forgetStats();
+
         if ($quantityForOrder) {
             throw new Exception('There was not enough stock to satisfy this order');
         }

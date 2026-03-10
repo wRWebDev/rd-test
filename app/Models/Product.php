@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Enums\ProductStats;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -63,28 +65,55 @@ class Product extends Model
 
     public function totalQuantity(): int
     {
-        return $this->warehouses()->sum('warehouse_stock.quantity');
+        return Cache::rememberForever(
+            $this->getStatCacheKey(ProductStats::TOTAL_QUANTITY),
+            fn () => $this->warehouses()->sum('warehouse_stock.quantity')
+        );
     }
 
     public function allocatedToOrders(): int
     {
-        return $this->orders()
-            ->where('status', OrderStatus::PLACED)
-            ->sum('orders_items.quantity');
+        return Cache::rememberForever(
+            $this->getStatCacheKey(ProductStats::ALLOCATED_TO_ORDERS),
+            fn () => $this->orders()
+                ->where('status', OrderStatus::PLACED)
+                ->sum('orders_items.quantity')
+        );
     }
 
     public function physicalQuantity(): int
     {
-        return $this->totalQuantity() + $this->allocatedToOrders();
+        return Cache::rememberForever(
+            $this->getStatCacheKey(ProductStats::PHYSICAL_QUANTITY),
+            fn () => $this->totalQuantity() + $this->allocatedToOrders()
+        );
     }
 
     public function totalThreshold(): int
     {
-        return $this->warehouses()->sum('warehouse_stock.threshold');
+        return Cache::rememberForever(
+            $this->getStatCacheKey(ProductStats::THRESHOLD),
+            fn () => $this->warehouses()->sum('warehouse_stock.threshold')
+        );
     }
 
     public function immediateDespatch(): int
     {
-        return $this->totalQuantity() - $this->totalThreshold();
+        return Cache::rememberForever(
+            $this->getStatCacheKey(ProductStats::IMMEDIATE_DESPATCH),
+            fn () => $this->totalQuantity() - $this->totalThreshold(),
+        );
+    }
+
+    private function getStatCacheKey(ProductStats $stat): string
+    {
+        return sprintf('product:%s:%s', $this->uuid, $stat->value);
+    }
+
+    public function forgetStats(): void
+    {
+        foreach (ProductStats::cases() as $stat) {
+            Cache::forget($this->getStatCacheKey($stat));
+        }
     }
 }
