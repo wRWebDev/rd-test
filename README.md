@@ -55,6 +55,11 @@ There is backend validation on the available quantities for each product. If a q
 
 I like when one file looks like another. I have opinions about code formatting, but just so long as within a single project, all files conform to a set of rules, I'm happy. To do this, I utilised Laravel's `pint` package, adding a rules file in the root directory `pint.json`, and then set up a `.vscode/settings.json` file which is set to be hidden in the `.gitignore`, but essentially runs the linter any time we save a `.php` file.
 
+The linter can be run using:
+```bash
+composer lint
+```
+
 #### Static Analysis
 
 I've used PHPStan via the Larastan package to perform some static analysis, help catch unforseen issues and to reduce the amount of redundant code in the codebase. I haven't gone so far as to insist on strict typing, but this is a good starting point if the project were to go in that direction. I believe that in CI/CD environments, things like this are essentials as if they're set up as hooks, either locally or as GitHub actions, they can save a lot of problems down the line.
