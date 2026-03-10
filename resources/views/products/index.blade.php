@@ -1,1 +1,3 @@
-@dd($products)
+<x-layout>
+    @dump($products)
+</x-layout>
