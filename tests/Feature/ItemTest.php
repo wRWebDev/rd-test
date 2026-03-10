@@ -22,4 +22,12 @@ class ItemTest extends TestCase
             'threshold' => 2,
         ]);
     }
+
+    /**
+     * A product can display its total stock across warehouses
+     */
+    public function test_products_total_quantity(): void
+    {
+        $this->assertEquals(20, $this->product->totalQuantity());
+    }
 }

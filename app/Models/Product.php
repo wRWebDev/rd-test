@@ -59,4 +59,9 @@ class Product extends Model
             ->withPivot('price', 'quantity', 'total')
             ->withTimestamps();
     }
+
+    public function totalQuantity(): int
+    {
+        return $this->warehouses()->sum('warehouse_stock.quantity');
+    }
 }
